@@ -14,6 +14,8 @@ import javafx.scene.control.TextField;
 public class ArtsmiaController {
 	
 	private Model model ;
+	
+	private boolean flag=false;
 
     @FXML
     private ResourceBundle resources;
@@ -31,7 +33,7 @@ public class ArtsmiaController {
     private Button btnCalcolaPercorso;
 
     @FXML
-    private ComboBox<?> boxRuolo;
+    private ComboBox<String> boxRuolo;
 
     @FXML
     private TextField txtArtista;
@@ -42,23 +44,43 @@ public class ArtsmiaController {
     @FXML
     void doArtistiConnessi(ActionEvent event) {
     	txtResult.clear();
-    	txtResult.appendText("Calcola artisti connessi");
+    	if(this.flag==false) {
+    		this.txtResult.setText("Prima di trovare gli artisti connessi crea il grafo!");
+    	} else {
+    		
+    			this.txtResult.appendText(this.model.getConnessi());
+    		
+    		
+    	}
     }
 
     @FXML
     void doCalcolaPercorso(ActionEvent event) {
     	txtResult.clear();
-    	txtResult.appendText("Calcola percorso");
+    	
+    	Integer id=Integer.parseInt(this.txtArtista.getText());
+    	
+    	txtResult.setText(this.model.calcolaPercorso(id));
     }
 
     @FXML
     void doCreaGrafo(ActionEvent event) {
     	txtResult.clear();
-    	txtResult.appendText("Crea grafo");
+    	String ruolo= this.boxRuolo.getValue();
+    	if(ruolo==null) {
+    		this.txtResult.setText("Selezionare un ruolo prima di creare il grafo");
+    	}else {
+    		this.model.creaGrafo(ruolo);
+    		this.flag=true;
+    		this.txtResult.setText(this.model.nVertici());
+    		this.txtResult.appendText(this.model.nArchi());
+    	}
     }
 
     public void setModel(Model model) {
     	this.model = model;
+    	
+    	this.boxRuolo.getItems().addAll(model.popolaCmb());
     }
 
     
